@@ -22,10 +22,27 @@ function MainApp() {
   let [loading2, setLoading2] = useState(false);
   let [color, setColor] = useState("#FFFF00");
   const [referralEarns, setReferralEarns] = useState(0);
+  const [myRef, setMyRef] = useState(null);
 
   const { mint, getPrices, getReward, claimReward, referralEarn } =
     useContracts();
   const { address, isConnected } = useWeb3ModalAccount();
+
+  useEffect(() => {
+    // get the referral from the address
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get("ref");
+    console.log(ref);
+    if (ref) {
+      setReferrersCode(ref);
+    }
+  }, []);
+
+  useEffect(() => {
+    const url = window.location.host;
+    console.log(url);
+    setMyRef(url + "?ref=" + address);
+  }, [address]);
 
   useEffect(() => {
     const _getReward = async () => {
@@ -552,6 +569,27 @@ function MainApp() {
                     <h3 className="bg-sentry overflow-hidden rounded-tl-3xl rounded-tr-3xl py-5 text-center text-2xl md:text-3xl">
                       Referral Earn
                     </h3>
+                    <div className="pb-2">
+                      <label
+                        htmlFor="refCode"
+                        className="capitalize text-black"
+                      >
+                        Referrer&apos;s Code
+                      </label>
+                    </div>
+                    <div className="relative flex justify-between">
+                      <input
+                        name="refCode"
+                        placeholder=""
+                        onChange={(e) => setReferrersCode(e.target.value)}
+                        value={myRef}
+                        type="text"
+                        id="refCode"
+                        className="block  h-[44px] w-full text-black  rounded-s-xl border-none bg-gray-200   placeholder:text-gray80 focus:border-none focus:outline-none focus:ring-0"
+                        data-gtm-form-interact-field-id="3"
+                      />
+                      <CopyToClipboardButton textToCopy={myRef} />
+                    </div>
                     <div className="relative h-full">
                       <div className="flex h-full flex-col justify-center rounded-bl-3xl rounded-br-3xl  bg-gray-100 p-4 text-dark2 shadow-md md:p-8">
                         <div className="flex justify-between pb-2">
